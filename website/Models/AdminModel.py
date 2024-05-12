@@ -3,6 +3,9 @@ from django.db import models
 
 
 class Admin(models.Model):
+    class Meta:
+        app_label = 'website'
+
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)

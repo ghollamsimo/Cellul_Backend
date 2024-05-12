@@ -16,7 +16,7 @@ class User(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200, blank=True)
     password = models.CharField(max_length=200)
-    role = models.CharField(max_length=255, choice=Role.choices())
+    role = models.CharField(max_length=255, choices=Role.choices())
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
