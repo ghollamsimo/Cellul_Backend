@@ -15,16 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from website.api.views import login_user, success, login_etudiant, successEtudiant
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('core.api.urls')),
-    path('login/', login_user, name='login'),  # Add a URL pattern for your login view
-    path('success/', success, name='success'),
-    path('loginEtudiant/', login_etudiant, name='loginEtudiant'),
-    path('successEtudiant/',successEtudiant , name='successEtudiant'),
+
 
 ]
 

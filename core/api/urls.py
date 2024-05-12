@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from website.api.urls import web_router
+from website.routes.urls import web_router
 from django.urls import path, include
 
 
