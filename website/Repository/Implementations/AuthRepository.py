@@ -1,6 +1,6 @@
 from abc import ABC
 
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
 from rest_framework import serializers, status
 
@@ -11,6 +11,8 @@ from website.Models.UserModel import User
 from website.Repository.Interfaces.AuthInterface import AuthInterface
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from website.Serializers.UserSerializer import UserSerializer
 
 
 class AuthRepository(AuthInterface, ABC):
@@ -39,23 +41,14 @@ class AuthRepository(AuthInterface, ABC):
             raise serializers.ValidationError({'message': 'Invalid role'})
         pass
 
-    def Login(self, validated_data, request):
-        if request.method == 'POST':
-            email = request.data.get('email')
-            password = request.data.get('password')
+    def Login(self, email, password):
 
-            if not email or not password:
-                return JsonResponse({'error': 'Please provide both email and password'}, status=400)
-
-            user = authenticate(request, email=email, password=password)
-            print('User')
-            if user is not None:
-                token = RefreshToken.for_user(user)
-                return JsonResponse({'token': str(token.access_token)})
-            else:
-                return JsonResponse({'error': 'Invalid email or password'}, status=401)
+        user = User.objects.get(email=email)
+        if check_password(password, user.password):
+            token = RefreshToken.for_user(user)
+            return JsonResponse({'token': str(token.access_token)})
         else:
-            return JsonResponse({'error': 'Method not allowed'}, status=405)
+            return JsonResponse({'error': 'Invalid email or password'}, status=401)
 
     def Logout(self, request):
         if request.method == 'POST':

@@ -10,5 +10,5 @@ from website.Models.UserModel import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password', 'role']
+        fields = '__all__'
 

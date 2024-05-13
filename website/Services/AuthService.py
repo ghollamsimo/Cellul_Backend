@@ -11,8 +11,8 @@ class AuthService(AuthInterface, ABC):
     def Register(self, validated_data):
         return self.AuthRepository.Register(validated_data)
 
-    def Login(self, validated_data, request):
-        return self.AuthRepository.Login(validated_data, request)
+    def Login(self, email, password):
+        return self.AuthRepository.Login(email, password)
 
     def Logout(self, request):
         return self.AuthRepository.Logout(request)

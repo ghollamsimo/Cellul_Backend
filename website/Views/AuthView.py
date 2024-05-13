@@ -1,8 +1,13 @@
+from django.contrib.auth.hashers import check_password
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
+from rest_framework_simplejwt.tokens import RefreshToken
 
+from website.Models import User
+from website.Serializers.UserSerializer import UserSerializer
 from website.Services.AuthService import AuthService
 
 
@@ -33,6 +38,7 @@ def create(request):
 
 
 @api_view(['POST'])
+@csrf_exempt
 def post(request):
     if request.method == 'POST':
         email = request.data.get('email')
@@ -41,19 +47,19 @@ def post(request):
         if not email or not password:
             return Response({'message': 'Email and password required'}, status=400)
 
-        try:
-            auth_service = AuthService()
-            user = auth_service.Login({'email': email, 'password': password}, request)
-            if user:
-                return JsonResponse({'message': 'Login successful'})
-            else:
-                return JsonResponse({'message': 'Invalid credentials'}, status=401)
-        except Exception as e:
-            return JsonResponse({'message': str(e)}, status=500)
+        user = User.objects.get(email=email)
+        if check_password(password, user.password):
+            token = RefreshToken.for_user(user)
+            userr=UserSerializer(user).data
+            print(user)
+            return JsonResponse({'token': str(token.access_token),'user':userr})
+        return JsonResponse({'User': UserSerializer(user)}, safe=False)
+
     else:
         return Response({'message': 'Method not allowed'}, status=405)
 
 
+@api_view(['POST'])
 def UserLogout(request):
     if request.method == 'POST':
         user = None
@@ -62,7 +68,4 @@ def UserLogout(request):
 
         auth_service = AuthService()
         logout = auth_service.Logout(request)
-        if logout:
-            return JsonResponse({'message': 'You have been logged out'})
-        else:
-            return JsonResponse({'message': 'error'})
+        return JsonResponse(logout)
