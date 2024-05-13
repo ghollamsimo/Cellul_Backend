@@ -13,6 +13,10 @@ class Role(Enum):
 
 
 class User(models.Model):
+    class Meta:
+        app_label = 'website'
+        db_table = 'website_user'
+
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200, blank=True)
     password = models.CharField(max_length=200)

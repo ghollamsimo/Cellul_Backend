@@ -5,6 +5,9 @@ class AuthInterface(ABC):
     @abstractmethod
     def Register(self, validated_data):
         pass
-    @abstractmethod
-    def Login(self):
+
+    def Login(self, validated_data, request):
+        pass
+
+    def Logout(self, request):
         pass
