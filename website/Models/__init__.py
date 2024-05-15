@@ -8,3 +8,4 @@ from .FeedbackModel import *
 from .MediaModel import *
 from .NotificationModel import *
 from .StudentModel import *
+from .AppointementModel import *
