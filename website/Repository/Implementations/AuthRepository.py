@@ -41,23 +41,12 @@ class AuthRepository(AuthInterface, ABC):
             raise serializers.ValidationError({'message': 'Invalid role'})
         pass
 
-    def Login(self, email, password):
-
+    def Login(self, email, password, request):
         user = User.objects.get(email=email)
-        if check_password(password, user.password):
-            token = RefreshToken.for_user(user)
-            return JsonResponse({'token': str(token.access_token)})
-        else:
-            return JsonResponse({'error': 'Invalid email or password'}, status=401)
+        return user
+        pass
 
-    def Logout(self, request):
-        if request.method == 'POST':
-            user = request.user
-            try:
-                token = RefreshToken.for_user(user)
-                token.blacklist()
-                return JsonResponse({'message': 'Logged out'}, status=200)
-            except Exception as e:
-                return JsonResponse({'error': str(e)}, status=500)
-        else:
-            return JsonResponse({'error': 'Method not allowed'}, status=405)
+    def Logout(self, user):
+        return User.objects.get(user)
+        pass
+

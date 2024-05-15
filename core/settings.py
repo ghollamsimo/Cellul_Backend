@@ -14,11 +14,20 @@ from pathlib import Path
 
 import pymysql
 
+
 pymysql.install_as_MySQLdb()
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ghollamsimo1@gmail.com'
+EMAIL_HOST_PASSWORD = 'zosw tgik bxjh yakl'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -66,7 +75,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Add your frontend URL here
-    "http://localhost:8000",   # Add your frontend URL here
+    "http://localhost:8000",  # Add your frontend URL here
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -74,8 +83,6 @@ CORS_ORIGIN_WHITELIST = [
     # Add more origins if needed
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
-
-
 
 ROOT_URLCONF = 'core.urls'
 
@@ -97,7 +104,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -114,7 +120,6 @@ DATABASES = {
         },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -134,7 +139,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -145,7 +149,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

@@ -10,6 +10,9 @@ from website.Models import User
 from website.Serializers.UserSerializer import UserSerializer
 from website.Services.AuthService import AuthService
 
+from django.conf import settings
+from django.core.mail import send_mail
+
 
 @api_view(['POST'])
 def create(request):
@@ -37,35 +40,39 @@ def create(request):
         return Response({'message': 'This Function Is Supported Method Post'})
 
 
+def otp():
+    subject = 'Welcome to My Site'
+    message = 'Thank you for logging in!'
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [['email']]
+
+    try:
+        send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+    except Exception as e:
+        return JsonResponse({'message': 'Failed to send email: {}'.format(str(e))}, status=500)
+
+
 @api_view(['POST'])
 @csrf_exempt
 def post(request):
     if request.method == 'POST':
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response({'message': 'Email and password required'}, status=400)
-
-        user = User.objects.get(email=email)
-        if check_password(password, user.password):
-            token = RefreshToken.for_user(user)
-            userr=UserSerializer(user).data
-            print(user)
-            return JsonResponse({'token': str(token.access_token),'user':userr})
-        return JsonResponse({'User': UserSerializer(user)}, safe=False)
-
+        auth_service = AuthService()
+        return auth_service.Login(request=request)
     else:
-        return Response({'message': 'Method not allowed'}, status=405)
+        return JsonResponse({'message': 'Only POST requests are allowed'}, status=405)
 
 
 @api_view(['POST'])
-def UserLogout(request):
+def UserLogout(request, user):
     if request.method == 'POST':
-        user = None
-        if user:
-            return JsonResponse({'message': 'Your Not logged'})
+        if not request.user.is_authenticated:
+            return JsonResponse({'message': 'You are not logged in.'}, status=401)
 
         auth_service = AuthService()
-        logout = auth_service.Logout(request)
-        return JsonResponse(logout)
+        auth_service.Logout(user)
+        User.auth_token.delete()
+
+        refresh_token = RefreshToken.for_user(user)
+        refresh_token.blacklist()
+
+        return JsonResponse({'message': 'Logout successful.'})

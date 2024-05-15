@@ -6,8 +6,8 @@ class AuthInterface(ABC):
     def Register(self, validated_data):
         pass
 
-    def Login(self, email, password):
+    def Login(self, email, password, request):
         pass
 
-    def Logout(self, request):
+    def Logout(self, user):
         pass
