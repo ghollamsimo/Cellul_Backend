@@ -19,7 +19,7 @@ class EventRepository(EventInterface, ABC):
         if Event.objects.filter(title=title).exists():
             raise serializers.ValidationError({'title': 'This Event already exists'})
 
-        event = Event.objects.create(
+        event = Event.objects.update_or_create(
             title=title,
             description=description,
             start_time=start_time,
@@ -49,10 +49,8 @@ class EventRepository(EventInterface, ABC):
         else:
             event = Event.objects.all()
         print("Queryset:", event)
-        if event:
-            serializer = EventSerializer(event, many=True)
-            print("Serialized Data:", serializer.data)
-            return serializer.data
+        if event is not None:
+            return event
         return []
 
     def destroy(self, pk):

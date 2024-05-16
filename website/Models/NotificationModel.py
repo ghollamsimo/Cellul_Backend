@@ -7,10 +7,10 @@ from website.Models.StudentModel import Student
 
 
 class Notification(models.Model):
-    advise = models.ForeignKey(Advise, on_delete=models.CASCADE)
+    advise = models.ForeignKey(Advise, null=True, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    appointment = models.ForeignKey(Appointment, null=True, on_delete=models.CASCADE)
     message = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 

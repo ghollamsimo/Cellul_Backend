@@ -27,8 +27,8 @@ class EventService:
     def index(self, request):
         events = self.EventRepository.index(request)
         print("Events:", events)
-        response = JsonResponse(events, status=status.HTTP_200_OK, safe=False)
-        return response
+        #response = JsonResponse(events, status=status.HTTP_200_OK, safe=False)
+        return events
 
     def destroy(self, pk):
         event = self.EventRepository.destroy(pk=pk)

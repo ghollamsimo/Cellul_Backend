@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework.decorators import api_view
 
 from website.Services.EventService import EventService
+from website.Services.NotificationService import NotificationService
+from website.Serializers.EventSerializer import EventSerializer
 
 
 @api_view(['POST'])
@@ -15,7 +17,7 @@ def add_event(request):
         localisation = request.POST.get('localisation')
 
         if not localisation or not title or not start_time or not end_time or not description:
-            return JsonResponse({'message': 'Please Fill in fields'})
+            return JsonResponse({'message': 'Please fill in all fields'}, status=400)
 
         try:
             event_service = EventService()
@@ -23,10 +25,14 @@ def add_event(request):
                 {'title': title, 'description': description, 'start_time': start_time, 'end_time': end_time,
                  'localisation': localisation}
             )
-            return JsonResponse({'metadata': 'Event Created Successfully'})
+            notification_service = NotificationService()
+            notification = notification_service.store_event_notification()
+
+            return JsonResponse({'message': 'Event created successfully'})
         except serializers.ValidationError as e:
             return JsonResponse({'message': 'Validation error', 'details': e.detail}, status=400)
-
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
 
 @api_view(['PUT'])
 def update_event(request, pk):
@@ -63,8 +69,9 @@ def all_event(request):
     if request.method == 'GET':
         event_service = EventService()
         response = event_service.index(request)
-        print("Response:", response)
-        return response
+        events = EventSerializer(response, many=True).data
+        print("Response:", events)
+        return JsonResponse({'events': events}, status=200)
 
 
 @api_view(['DELETE'])
