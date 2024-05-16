@@ -15,9 +15,9 @@ class EventService:
     def store(self, validated_data):
         return self.EventRepository.store(validated_data)
 
-    def update(self, pk, validated_data):
+    def update(self,pk, validated_data):
         try:
-            updated_event = self.EventRepository.update(pk, **validated_data)
+            updated_event = EventRepository.update(self=self, pk=pk,validated_data=validated_data)
             return updated_event
         except Event.DoesNotExist:
             raise serializers.ValidationError({'message': 'Event not found'})
@@ -27,7 +27,6 @@ class EventService:
     def index(self, request):
         events = self.EventRepository.index(request)
         print("Events:", events)
-        #response = JsonResponse(events, status=status.HTTP_200_OK, safe=False)
         return events
 
     def destroy(self, pk):

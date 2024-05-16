@@ -32,16 +32,14 @@ class EventRepository(EventInterface, ABC):
     def update(self, pk, validated_data):
         try:
             event = Event.objects.get(pk=pk)
-            event_serializer = EventSerializer(instance=event, data=validated_data)
-            if event_serializer.is_valid():
-                event_serializer.save()
-                return event_serializer
-            else:
-                raise serializers.ValidationError(event_serializer.errors)
+            for key, value in validated_data.items():
+                setattr(event, key, value)
+            event.save()
+            return event
         except Event.DoesNotExist:
             raise serializers.ValidationError({'message': 'Event not found'})
-
-        pass
+        except Exception as e:
+            raise serializers.ValidationError({'message': str(e)})
 
     def index(self, request):
         if request.query_params:

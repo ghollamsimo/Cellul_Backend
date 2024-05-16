@@ -34,13 +34,14 @@ def add_event(request):
     else:
         return JsonResponse({'message': 'Invalid request method'}, status=405)
 
+
 @api_view(['PUT'])
 def update_event(request, pk):
-    title = request.POST.get('title')
-    description = request.POST.get('description')
-    start_time = request.POST.get('start_time')
-    end_time = request.POST.get('end_time')
-    localisation = request.POST.get('localisation')
+    title = request.data.get('title')
+    description = request.data.get('description')
+    start_time = request.data.get('start_time')
+    end_time = request.data.get('end_time')
+    localisation = request.data.get('localisation')
 
     if not (title and description and start_time and end_time and localisation):
         return JsonResponse({'message': 'Please fill in all fields'}, status=400)
@@ -57,13 +58,12 @@ def update_event(request, pk):
                 'localisation': localisation
             }
         )
-        return JsonResponse({'message': 'Event updated successfully', 'event': updated_event}, status=200)
+        serializer = EventSerializer(updated_event)
+        return JsonResponse({'message': 'Event updated successfully', 'event': serializer.data}, status=200)
     except serializers.ValidationError as e:
         return JsonResponse({'message': 'Validation error', 'details': e.detail}, status=400)
     except Exception as e:
         return JsonResponse({'message': 'An error occurred', 'details': str(e)}, status=500)
-
-
 @api_view(['GET'])
 def all_event(request):
     if request.method == 'GET':
