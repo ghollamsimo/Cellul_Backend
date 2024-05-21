@@ -1,24 +1,36 @@
 from django.contrib.auth.hashers import check_password
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import serializers
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import JsonResponse
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import JsonResponse
 
 from website.Models import User
 from website.Serializers.UserSerializer import UserSerializer
 from website.Services.AuthService import AuthService
 
-from django.conf import settings
-from django.core.mail import send_mail
 
+@method_decorator(csrf_exempt, name='dispatch')
+class AuthView(APIView):
+    permission_classes = [AllowAny]
 
-@api_view(['POST'])
-def create(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
+    def post(self, request, action=None):
+        if action == 'register':
+            return self.register(request)
+        elif action == 'login':
+            return self.login(request)
+        elif action == 'logout':
+            return self.logout(request)
+        else:
+            return Response({'message': 'Action not specified'}, status=400)
+
+    def register(self, request):
+        name = request.data.get('name')
+        email = request.data.get('email')
         role = request.data.get('role')
         password = request.data.get('password')
         if not role or not password or not email or not name:
@@ -26,7 +38,7 @@ def create(request):
 
         try:
             auth_service = AuthService()
-            user = auth_service.Register({
+            auth_service.Register({
                 'name': name,
                 'email': email,
                 'role': role,
@@ -36,43 +48,21 @@ def create(request):
         except serializers.ValidationError as e:
             return Response({'message': 'Validation error', 'details': e.detail}, status=400)
 
-    else:
-        return Response({'message': 'This Function Is Supported Method Post'})
-
-
-def otp():
-    subject = 'Welcome to My Site'
-    message = 'Thank you for logging in!'
-    from_email = settings.EMAIL_HOST_USER
-    recipient_list = [['email']]
-
-    try:
-        send_mail(subject, message, from_email, recipient_list, fail_silently=True)
-    except Exception as e:
-        return JsonResponse({'message': 'Failed to send email: {}'.format(str(e))}, status=500)
-
-
-@api_view(['POST'])
-@csrf_exempt
-def post(request):
-    if request.method == 'POST':
+    def login(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
         auth_service = AuthService()
-        return auth_service.Login(request=request)
-    else:
-        return JsonResponse({'message': 'Only POST requests are allowed'}, status=405)
+        return auth_service.Login(email=email, password=password)
 
-
-@api_view(['POST'])
-def UserLogout(request, user):
-    if request.method == 'POST':
+    def logout(self, request):
         if not request.user.is_authenticated:
             return JsonResponse({'message': 'You are not logged in.'}, status=401)
 
         auth_service = AuthService()
-        auth_service.Logout(user)
+        auth_service.Logout(request.user)
         User.auth_token.delete()
 
-        refresh_token = RefreshToken.for_user(user)
+        refresh_token = RefreshToken.for_user(request.user)
         refresh_token.blacklist()
 
         return JsonResponse({'message': 'Logout successful.'})

@@ -1,33 +1,39 @@
+import os
 from abc import ABC
 
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers
+from rest_framework import serializers, request
 
+from core import settings
 from website.Models import Event
+from website.Models.UserModel import User
+from website.Models.AdminModel import Admin
+from website.Repository.Implementations.MediaRepository import MediaRepository
 from website.Repository.Interfaces.EventInterface import EventInterface
 from website.Serializers.EventSerializer import EventSerializer
 
 
 class EventRepository(EventInterface, ABC):
-    def store(self, validated_data):
-        title = validated_data.pop('title')
-        description = validated_data.pop('description')
-        start_time = validated_data.pop('start_time')
-        end_time = validated_data.pop('end_time')
-        localisation = validated_data.pop('localisation')
+    def store(self, data, admin):
+        user_id = data.get('user_id')
+        print("user", user_id)
 
-        if Event.objects.filter(title=title).exists():
+        if Event.objects.filter(title=data.get('title')).exists():
             raise serializers.ValidationError({'title': 'This Event already exists'})
 
-        event = Event.objects.update_or_create(
-            title=title,
-            description=description,
-            start_time=start_time,
-            end_time=end_time,
-            localisation=localisation
-        )
+        try:
+            event = Event.objects.create(
+                title=data.get('title'),
+                description=data.get('description'),
+                start_time=data.get('start_time'),
+                end_time=data.get('end_time'),
+                localisation=data.get('localisation'),
+                admin=admin
+            )
 
-        return event
+            return event
+        except Exception as e:
+            raise serializers.ValidationError({'message': 'An error occurred during event creation', 'details': str(e)})
 
     def update(self, pk, validated_data):
         try:
@@ -46,7 +52,7 @@ class EventRepository(EventInterface, ABC):
             event = Event.objects.filter(**request.query_params.dict())
         else:
             event = Event.objects.all()
-        print("Queryset:", event)
+        # print("Queryset:", event)
         if event is not None:
             return event
         return []

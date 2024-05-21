@@ -4,8 +4,8 @@ from website.Models.EventModel import Event
 
 
 class Media(models.Model):
-    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
-    image_url = models.CharField(max_length=200)
+    file_path = models.CharField(max_length=255)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event_id
+        return self.file_path

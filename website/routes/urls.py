@@ -1,15 +1,22 @@
 from django.urls import path
+
+from website.Views.AdviseView import AdviseView
 from website.Views.AuthView import *
 from website.Views.EventView import *
+from website.Views.AppointemenView import *
+from website.Views.FeedbackView import FeedbackView
+from website.Views.NotificationView import NotificationView
 
 urlpatterns = [
-    path('register/', create),
-    path('login/', post),
-    path('logout/', UserLogout),
-    path('addEvent/', add_event),
-    path('update_event/<int:pk>/', update_event),
-    path('allEvents/', all_event),
-    path('delete_event/<int:pk>/', delete_event),
+    path('auth/<str:action>/', AuthView.as_view(), name='auth'),
+
+    path('event/<str:action>/', EventView.as_view(), name='event_action'),
+    path('notification/<str:action>/<int:pk>', NotificationView.as_view(), name='notification_action'),
+    path('advise/<str:action>/<int:pk>', AdviseView.as_view(), name='advise_action'),
+    path('feedback/<str:action>/<int:advise>', FeedbackView.as_view()),
+    path('add_appointment/<int:id>' , add_appointment),
+    path('feedback/<str:action>/', FeedbackView.as_view()),
+    path('feedback/<str:action>/<int:pk>', FeedbackView.as_view()),
 ]
 
 

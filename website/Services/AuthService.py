@@ -16,19 +16,15 @@ class AuthService:
     def Register(self, validated_data):
         return self.AuthRepository.Register(validated_data)
 
-    def Login(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
+    def Login(self, email, password):
         if not email or not password:
             return JsonResponse({'message': 'Email and password required'}, status=400)
-
         try:
-            user = self.AuthRepository.Login(email=email, password=password, request=True)
+            user = self.AuthRepository.Login(email=email)
             if user and check_password(password, user.password):
                 token = RefreshToken.for_user(user)
-                user_serializer = UserSerializer(user).data
-                return JsonResponse({'token': str(token.access_token), 'user': user_serializer})
+                user_serializer = UserSerializer(user)
+                return JsonResponse({'token': str(token.access_token), 'user': user_serializer.data})
             else:
                 return JsonResponse({'message': 'Invalid credentials'}, status=400)
         except User.DoesNotExist:

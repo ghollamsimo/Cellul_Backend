@@ -41,7 +41,7 @@ class AuthRepository(AuthInterface, ABC):
             raise serializers.ValidationError({'message': 'Invalid role'})
         pass
 
-    def Login(self, email, password, request):
+    def Login(self, email):
         user = User.objects.get(email=email)
         return user
         pass

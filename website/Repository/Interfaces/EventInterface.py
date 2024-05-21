@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class EventInterface(ABC):
     @abstractmethod
-    def store(self, validated_data):
+    def store(self, data, admin):
         pass
 
     @abstractmethod
