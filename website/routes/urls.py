@@ -6,9 +6,12 @@ from website.Views.EventView import *
 from website.Views.AppointemenView import *
 from website.Views.FeedbackView import FeedbackView
 from website.Views.NotificationView import NotificationView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path('auth/<str:action>/', AuthView.as_view(), name='auth'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 
     path('event/<str:action>/', EventView.as_view(), name='event_action'),
     path('notification/<str:action>/<int:pk>', NotificationView.as_view(), name='notification_action'),
