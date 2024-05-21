@@ -16,6 +16,7 @@ from website.Serializers.EventSerializer import EventSerializer
 class EventRepository(EventInterface, ABC):
     def store(self, data, admin):
         user_id = data.get('user_id')
+
         print("user", user_id)
 
         if Event.objects.filter(title=data.get('title')).exists():

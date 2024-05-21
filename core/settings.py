@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -37,6 +38,7 @@ SECRET_KEY = 'django-insecure-iawna@zi&_r5v+t#x_y%&h+@ol!$o)th%n#qt6^-7x(su0f%3w
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = []
 
