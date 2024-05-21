@@ -1,5 +1,6 @@
 from django.urls import path
 
+from website.Views.AdminView import AdminView
 from website.Views.AdviseView import AdviseView
 from website.Views.AuthView import *
 from website.Views.EventView import *
@@ -14,9 +15,10 @@ urlpatterns = [
     path('notification/<str:action>/<int:pk>', NotificationView.as_view(), name='notification_action'),
     path('advise/<str:action>/<int:pk>', AdviseView.as_view(), name='advise_action'),
     path('feedback/<str:action>/<int:advise>', FeedbackView.as_view()),
-    path('add_appointment/<int:id>' , add_appointment),
+    path('add_appointment/<int:id>', add_appointment),
     path('feedback/<str:action>/', FeedbackView.as_view()),
-    path('feedback/<str:action>/<int:pk>', FeedbackView.as_view()),
+    path('updated_feedback/<str:action>/<int:pk>', FeedbackView.as_view()),
+    path('stats/<str:action>', AdminView.as_view()),
 ]
 
 
