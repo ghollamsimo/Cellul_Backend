@@ -28,6 +28,9 @@ urlpatterns = [
     path('updated_user/<str:action>/<int:id>', AdminView.as_view()),
     path('deleted_user/<str:action>/<int:id>', AdminView.as_view()),
     path('record/<str:action>', RecordView.as_view()),
+    path('updated_record/<str:action>/<int:pk>', RecordView.as_view()),
+    path('deleted_record/<str:action>/<int:pk>', RecordView.as_view()),
+
 ]
 
 

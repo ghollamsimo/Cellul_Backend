@@ -6,7 +6,7 @@ class RecordInterface(ABC):
     def store(self, request):
         pass
 
-    def update(self, request, id):
+    def update(self, request, pk):
         pass
 
     def index(self, request):

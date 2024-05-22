@@ -13,3 +13,6 @@ class RecordService:
 
     def delete(self, request, pk):
         return self.RecordRepository.destroy(request, pk)
+
+    def index(self, request):
+        return self.RecordRepository.index(request)
