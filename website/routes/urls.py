@@ -15,6 +15,8 @@ urlpatterns = [
     path('auth/<str:action>/', AuthView.as_view(), name='auth'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 
+    path('activate/<uidb64>/<token>/', AuthView.as_view(), name='activate-account'),
+
     path('event/<str:action>/', EventView.as_view(), name='event_action'),
     path('updated_event/<str:action>/<int:pk>', EventView.as_view()),
     path('notification/<str:action>/<int:pk>', NotificationView.as_view(), name='notification_action'),

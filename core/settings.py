@@ -21,10 +21,9 @@ pymysql.install_as_MySQLdb()
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ghollamsimo1@gmail.com'
-EMAIL_HOST_PASSWORD = 'zosw tgik bxjh yakl'
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True  # Enable TLS (Transport Layer Security)
+EMAIL_HOST_USER = 'listeningcell.est.safi@gmail.com'
+EMAIL_HOST_PASSWORD = 'ghyb qigy stoe xhwi'  # Your Gmail password
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +47,22 @@ REST_FRAMEWORK = {
     ],
 
 }
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'website/templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -124,11 +139,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cellul',
+        'NAME': 'cellule',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3308',
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
