@@ -5,5 +5,8 @@ class AppointementService:
     def __init__(self):
         self.AppointementRepository = AppointementRepository()
 
-    def store_appointement(self, id):
-        return self.AppointementRepository.store(id=id)
+    def store_appointement(self, id, request):
+        return self.AppointementRepository.store(id, request)
+
+    def index_appointement(self, request):
+        return self.AppointementRepository.index(request)

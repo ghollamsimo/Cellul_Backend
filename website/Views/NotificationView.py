@@ -8,14 +8,6 @@ from rest_framework.views import APIView
 from website.Services.NotificationService import NotificationService
 
 
-@api_view(['POST'])
-def store_notification(request):
-    if request.method == 'POST':
-        notification_service = NotificationService()
-        notification = notification_service.store_event_notification()
-        return JsonResponse({'message': 'Notification Created successfully'})
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class NotificationView(APIView):
     permission_classes = [AllowAny]

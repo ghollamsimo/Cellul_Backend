@@ -62,7 +62,7 @@ class NotificationRepository(NotificationInterface, ABC):
         pass
 
     def destroy_of_appointment(self, request, pk):
-        user_id = request.data.get('user_id')
+        user_id = request.user.id
         advise = Advise.objects.get(user_id=user_id)
         if advise:
             notification = get_object_or_404(Notification, pk=pk)

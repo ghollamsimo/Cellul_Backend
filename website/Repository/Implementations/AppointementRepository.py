@@ -1,6 +1,7 @@
 from abc import ABC
 
 from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
 from website.Models.StudentModel import Student
 from website.Models.UserModel import User
@@ -10,19 +11,33 @@ from website.Repository.Interfaces.AppointementInterface import AppointementInte
 
 
 class AppointementRepository(AppointementInterface, ABC):
-    def store(self, id):
-        global student
-        users = User.objects.all()
-        for user in users:
-            student = Student.objects.get(user=user.id)
+    def store(self, id, request):
+        user_id = request.user.id
+        student = get_object_or_404(Student, user=user_id)
         advise = get_object_or_404(Advise, user__id=id)
-        date = None
-        time = None
-        appointement = Appointment.objects.create(
+
+        date = request.data.get('date')
+        time = request.data.get('time')
+
+        if not date or not time:
+            raise ValueError('Date and time must be provided.')
+
+        appointment = Appointment.objects.create(
             advise=advise,
-            student=student.id,
+            student=student,
             date=date,
             time=time
         )
-        return appointement
+
+        return appointment
         pass
+
+    def index(self, request):
+        user_id = request.user.id
+        advise = get_object_or_404(Advise, user_id=user_id)
+
+        if advise:
+            appointment = Appointment.objects.filter(advise_id=advise)
+            return appointment
+        else:
+            return serializers.ValidationError({'message': 'No Advise Found'})

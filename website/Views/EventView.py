@@ -22,14 +22,15 @@ class EventView(APIView):
     def post(self, request, action=None):
         if action == 'add_event':
             return self.create(request)
-        elif action == 'update_event':
-            pk = request.data.get('pk')
-            return self.update(request, pk)
         elif action == 'delete_event':
             pk = request.data.get('pk')
             return self.delete(request, pk)
         else:
             return JsonResponse({'message': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, action=None):
+        if action == 'update_event':
+            return self.update(request, pk)
 
     def create(self, request):
         title = request.data.get('title')
@@ -54,9 +55,11 @@ class EventView(APIView):
             notification_service.store_event_notification()
             return JsonResponse({'message': 'Event created successfully'}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
-            return JsonResponse({'message': 'Validation error', 'details': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': 'Validation error', 'details': e.detail},
+                                status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return JsonResponse({'message': 'An error occurred', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({'message': 'An error occurred', 'details': str(e)},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk):
         title = request.data.get('title')
@@ -78,13 +81,16 @@ class EventView(APIView):
                 'localisation': localisation
             })
             serializer = EventSerializer(updated_event)
-            return JsonResponse({'message': 'Event updated successfully', 'event': serializer.data}, status=status.HTTP_200_OK)
+            return JsonResponse({'message': 'Event updated successfully', 'event': serializer.data},
+                                status=status.HTTP_200_OK)
         except serializers.ValidationError as e:
-            return JsonResponse({'message': 'Validation error', 'details': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': 'Validation error', 'details': e.detail},
+                                status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return JsonResponse({'message': 'An error occurred', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({'message': 'An error occurred', 'details': str(e)},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def get(self,request,action):
+    def get(self, request, action):
         if action == 'all_events':
             try:
                 event_service = EventService()
@@ -92,7 +98,8 @@ class EventView(APIView):
                 serializer = EventSerializer(events, many=True)
                 return JsonResponse({'events': serializer.data}, status=status.HTTP_200_OK)
             except Exception as e:
-                return JsonResponse({'message': 'An error occurred', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return JsonResponse({'message': 'An error occurred', 'details': str(e)},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
         try:
@@ -100,4 +107,5 @@ class EventView(APIView):
             event_service.destroy(pk=pk)
             return JsonResponse({'message': 'Event deleted successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
-            return JsonResponse({'message': 'An error occurred', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({'message': 'An error occurred', 'details': str(e)},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 
+
 class Role(Enum):
     Admin = "Admin"
     Student = "Student"
@@ -11,6 +12,7 @@ class Role(Enum):
     @classmethod
     def choices(cls):
         return [(role.value, role.name) for role in cls]
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, name, password=None, **extra_fields):
@@ -33,8 +35,9 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, name, password, **extra_fields)
 
+
 class User(AbstractBaseUser, PermissionsMixin):
-    name = models.CharField(max_length=200,unique=True)
+    name = models.CharField(max_length=200, unique=True)
     email = models.EmailField(max_length=200, unique=True)
     role = models.CharField(max_length=255, choices=Role.choices())
     created = models.DateTimeField(auto_now_add=True)
