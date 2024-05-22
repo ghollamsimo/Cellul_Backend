@@ -5,3 +5,11 @@ class AdminInterface(ABC):
     @abstractmethod
     def stats(self):
         pass
+
+    @abstractmethod
+    def update_user(self, request, id):
+        pass
+
+    @abstractmethod
+    def destroy(self, request, id):
+        pass

@@ -1,5 +1,9 @@
 from abc import ABC
 
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
+
+from website.Models.AdminModel import Admin
 from website.Models.EventModel import Event
 from website.Models.AppointementModel import Appointment
 from website.Models.AdviseModel import Advise
@@ -25,4 +29,25 @@ class AdminRepository(AdminInterface, ABC):
         }
 
         return stats_data
+        pass
+
+    def update_user(self, request, id):
+        user_id = request.user.id
+        admin = Admin.objects.get(user=user_id)
+        if admin:
+            user = get_object_or_404(User, id=id)
+            user.email = request.data.get('email')
+            user.name = request.data.get('name')
+            user.save()
+        else:
+            return serializers.ValidationError({'message': 'Admin Not Found'})
+        pass
+
+    def destroy(self, request, id):
+        user_id = request.user.id
+        admin = Admin.objects.get(user=user_id)
+
+        if admin:
+            user = get_object_or_404(User, id=id)
+            return user.delete()
         pass

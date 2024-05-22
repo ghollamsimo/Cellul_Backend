@@ -24,6 +24,8 @@ urlpatterns = [
     path('feedback/<str:action>/', FeedbackView.as_view()),
     path('updated_feedback/<str:action>/<int:pk>', FeedbackView.as_view()),
     path('stats/<str:action>', AdminView.as_view()),
+    path('updated_user/<str:action>/<int:id>', AdminView.as_view()),
+    path('deleted_user/<str:action>/<int:id>', AdminView.as_view()),
 ]
 
 
