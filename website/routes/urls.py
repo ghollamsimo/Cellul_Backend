@@ -9,6 +9,7 @@ from website.Views.FeedbackView import FeedbackView
 from website.Views.NotificationView import NotificationView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from website.Views.RecordView import RecordView
 
 urlpatterns = [
     path('auth/<str:action>/', AuthView.as_view(), name='auth'),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('stats/<str:action>', AdminView.as_view()),
     path('updated_user/<str:action>/<int:id>', AdminView.as_view()),
     path('deleted_user/<str:action>/<int:id>', AdminView.as_view()),
+    path('record/<str:action>', RecordView.as_view()),
 ]
 
 
