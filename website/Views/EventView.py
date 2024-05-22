@@ -38,19 +38,14 @@ class EventView(APIView):
         start_time = request.data.get('start_time')
         end_time = request.data.get('end_time')
         localisation = request.data.get('localisation')
-        user_id = request.data.get('user_id')
 
         if not (title and description and start_time and end_time and localisation):
             return JsonResponse({'message': 'Please fill in all fields'}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            admin = Admin.objects.get(user=user_id)
-        except ObjectDoesNotExist:
-            return JsonResponse({'message': 'Admin for the user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             event_service = EventService()
-            event_service.store(request.data, admin)
+            event_service.store(request.data)
             notification_service = NotificationService()
             notification_service.store_event_notification()
             return JsonResponse({'message': 'Event created successfully'}, status=status.HTTP_201_CREATED)

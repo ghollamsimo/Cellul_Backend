@@ -12,8 +12,8 @@ class EventService:
         self.EventRepository = EventRepository()
         pass
 
-    def store(self, data, admin):
-        return self.EventRepository.store(data, admin)
+    def store(self, data):
+        return self.EventRepository.store(data)
 
     def update(self,pk, validated_data):
         try:

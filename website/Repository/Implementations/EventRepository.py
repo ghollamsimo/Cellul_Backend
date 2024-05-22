@@ -14,11 +14,9 @@ from website.Serializers.EventSerializer import EventSerializer
 
 
 class EventRepository(EventInterface, ABC):
-    def store(self, data, admin):
-        user_id = data.get('user_id')
-
-        print("user", user_id)
-
+    def store(self, data):
+        user_id = data.user.id
+        admin = Admin.objects.get(user_id=user_id)
         if Event.objects.filter(title=data.get('title')).exists():
             raise serializers.ValidationError({'title': 'This Event already exists'})
 
@@ -29,7 +27,7 @@ class EventRepository(EventInterface, ABC):
                 start_time=data.get('start_time'),
                 end_time=data.get('end_time'),
                 localisation=data.get('localisation'),
-                admin=admin
+                admin=admin.id
             )
 
             return event
@@ -37,23 +35,25 @@ class EventRepository(EventInterface, ABC):
             raise serializers.ValidationError({'message': 'An error occurred during event creation', 'details': str(e)})
 
     def update(self, pk, validated_data):
-        try:
-            event = Event.objects.get(pk=pk)
-            for key, value in validated_data.items():
-                setattr(event, key, value)
-            event.save()
-            return event
-        except Event.DoesNotExist:
-            raise serializers.ValidationError({'message': 'Event not found'})
-        except Exception as e:
-            raise serializers.ValidationError({'message': str(e)})
+        user_id = validated_data.user.id
+        admin = Admin.objects.get(user_id=user_id)
+        if admin:
+            try:
+                event = Event.objects.get(pk=pk)
+                for key, value in validated_data.items():
+                    setattr(event, key, value)
+                event.save()
+                return event
+            except Event.DoesNotExist:
+                raise serializers.ValidationError({'message': 'Event not found'})
+            except Exception as e:
+                raise serializers.ValidationError({'message': str(e)})
 
     def index(self, request):
         if request.query_params:
             event = Event.objects.filter(**request.query_params.dict())
         else:
             event = Event.objects.all()
-        # print("Queryset:", event)
         if event is not None:
             return event
         return []

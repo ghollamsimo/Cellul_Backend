@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 
 from website.Models.AppointementModel import Appointment
 from website.Models.RecordsModel import Record
-from website.Models.StudentModel import Student
 from website.Models.AdviseModel import Advise
 from website.Repository.Interfaces.RecordInterface import RecordInterface
 
@@ -29,7 +28,7 @@ class RecordRepository(RecordInterface, ABC):
         advise = Advise.objects.get(user_id=user_id)
         record = get_object_or_404(Record, id=pk)
         if advise:
-            for key, value in request.items():
+            for key, value in request.data.items():
                 setattr(record, key, value)
             record.save()
         pass
