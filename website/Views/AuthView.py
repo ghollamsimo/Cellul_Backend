@@ -12,6 +12,8 @@ from django.http import JsonResponse
 from website.Models import User
 from website.Serializers.UserSerializer import UserSerializer
 from website.Services.AuthService import AuthService
+from django.contrib import messages
+from django.shortcuts import render
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -38,12 +40,13 @@ class AuthView(APIView):
 
         try:
             auth_service = AuthService()
-            auth_service.Register({
+            user=auth_service.Register({
                 'name': name,
                 'email': email,
                 'role': role,
                 'password': password
             })
+            auth_service.email_verification(user,email)
             return Response({'message': 'User registered successfully'}, status=201)
         except serializers.ValidationError as e:
             return Response({'message': 'Validation error', 'details': e.detail}, status=400)
@@ -66,3 +69,11 @@ class AuthView(APIView):
         refresh_token.blacklist()
 
         return JsonResponse({'message': 'Logout successful.'})
+    
+    def get(self, request, uidb64, token):
+        auth_service = AuthService()
+        success, message = auth_service.activate_account(uidb64, token)
+        if success:
+            return render(request, 'account_activation_page.html', {'message': message})
+        else:
+            return render(request, 'account_activation_invalid.html', {'message': message})
