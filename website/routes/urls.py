@@ -3,6 +3,7 @@ from django.urls import path
 from website.Views.AdminView import AdminView
 from website.Views.AdviseView import AdviseView
 from website.Views.AuthView import *
+from website.Views.CalendarView import CalendarView
 from website.Views.EventView import *
 from website.Views.AppointemenView import *
 from website.Views.FeedbackView import FeedbackView
@@ -18,7 +19,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', AuthView.as_view(), name='activate-account'),
 
     path('event/<str:action>/', EventView.as_view(), name='event_action'),
-    path('updated_event/<str:action>/<int:pk>', EventView.as_view()),
+    path('event_action/<str:action>/<int:pk>', EventView.as_view()),
     path('notification/<str:action>/<int:pk>', NotificationView.as_view(), name='notification_action'),
     path('advise/<str:action>/<int:pk>', AdviseView.as_view(), name='advise_action'),
     path('feedback/<str:action>/<int:advise>', FeedbackView.as_view()),
@@ -31,7 +32,8 @@ urlpatterns = [
     path('deleted_user/<str:action>/<int:id>', AdminView.as_view()),
     path('record/<str:action>', RecordView.as_view()),
     path('record_action/<str:action>/<int:pk>', RecordView.as_view()),
-
+    path('calendar/<str:action>', CalendarView.as_view()),
+    path('calendar_action/<str:action>/<int:pk>', CalendarView.as_view()),
 ]
 
 

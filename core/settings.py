@@ -14,6 +14,8 @@ from datetime import timedelta
 from pathlib import Path
 
 import pymysql
+import certifi
+print(certifi.where())
 
 
 pymysql.install_as_MySQLdb()
@@ -37,12 +39,14 @@ SECRET_KEY = 'django-insecure-iawna@zi&_r5v+t#x_y%&h+@ol!$o)th%n#qt6^-7x(su0f%3w
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # Use SessionAuthentication for testing
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 
@@ -139,11 +143,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cellule',
+        'NAME': 'cellul',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3308',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },

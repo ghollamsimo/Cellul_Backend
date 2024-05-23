@@ -40,13 +40,13 @@ class AuthView(APIView):
 
         try:
             auth_service = AuthService()
-            user=auth_service.Register({
+            user = auth_service.Register({
                 'name': name,
                 'email': email,
                 'role': role,
                 'password': password
             })
-            auth_service.email_verification(user,email)
+            auth_service.email_verification(user, email)
             return Response({'message': 'User registered successfully'}, status=201)
         except serializers.ValidationError as e:
             return Response({'message': 'Validation error', 'details': e.detail}, status=400)

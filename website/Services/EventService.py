@@ -12,12 +12,12 @@ class EventService:
         self.EventRepository = EventRepository()
         pass
 
-    def store(self, data):
-        return self.EventRepository.store(data)
+    def store(self, request):
+        return self.EventRepository.store(request)
 
-    def update(self,pk, validated_data):
+    def update(self,pk, validated_data, request):
         try:
-            updated_event = EventRepository.update(self=self, pk=pk,validated_data=validated_data)
+            updated_event = EventRepository.update(self, pk=pk, validated_data=validated_data, request=request)
             return updated_event
         except Event.DoesNotExist:
             raise serializers.ValidationError({'message': 'Event not found'})
@@ -29,6 +29,6 @@ class EventService:
         print("Events:", events)
         return events
 
-    def destroy(self, pk):
-        event = self.EventRepository.destroy(pk=pk)
+    def destroy(self, pk, request):
+        event = self.EventRepository.destroy(pk=pk, request=request)
         return JsonResponse({'message': 'Event deleted successfully'})

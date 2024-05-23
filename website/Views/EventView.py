@@ -21,33 +21,39 @@ class EventView(APIView):
 
     def post(self, request, action=None):
         if action == 'add_event':
-            return self.create(request)
-        elif action == 'delete_event':
-            pk = request.data.get('pk')
-            return self.delete(request, pk)
+            return self.create(request=request)
         else:
             return JsonResponse({'message': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, action=None):
+        if action == 'delete_event':
+            return self.delete_event(pk, request)
 
     def put(self, request, pk, action=None):
         if action == 'update_event':
             return self.update(request, pk)
 
     def create(self, request):
+        if not request.user.is_authenticated:
+            return JsonResponse({'message': 'Authentication credentials were not provided.'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+
         title = request.data.get('title')
         description = request.data.get('description')
         start_time = request.data.get('start_time')
         end_time = request.data.get('end_time')
         localisation = request.data.get('localisation')
-
-        if not (title and description and start_time and end_time and localisation):
+        image = request.FILES.get('image[]')
+        if not (title and description and start_time and end_time and localisation and image):
             return JsonResponse({'message': 'Please fill in all fields'}, status=status.HTTP_400_BAD_REQUEST)
-
 
         try:
             event_service = EventService()
-            event_service.store(request.data)
+            event = event_service.store(request)
+
             notification_service = NotificationService()
             notification_service.store_event_notification()
+
             return JsonResponse({'message': 'Event created successfully'}, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
             return JsonResponse({'message': 'Validation error', 'details': e.detail},
@@ -62,8 +68,8 @@ class EventView(APIView):
         start_time = request.data.get('start_time')
         end_time = request.data.get('end_time')
         localisation = request.data.get('localisation')
-
-        if not (title and description and start_time and end_time and localisation):
+        image = request.FILES.get('image[]')
+        if not (title and description and start_time and end_time and localisation and image):
             return JsonResponse({'message': 'Please fill in all fields'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -74,7 +80,7 @@ class EventView(APIView):
                 'start_time': start_time,
                 'end_time': end_time,
                 'localisation': localisation
-            })
+            }, request)
             serializer = EventSerializer(updated_event)
             return JsonResponse({'message': 'Event updated successfully', 'event': serializer.data},
                                 status=status.HTTP_200_OK)
@@ -96,11 +102,12 @@ class EventView(APIView):
                 return JsonResponse({'message': 'An error occurred', 'details': str(e)},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def delete(self, request, pk):
-        try:
-            event_service = EventService()
-            event_service.destroy(pk=pk)
-            return JsonResponse({'message': 'Event deleted successfully'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return JsonResponse({'message': 'An error occurred', 'details': str(e)},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def delete_event(self, request, pk):
+        if request.method == 'DELETE':
+            try:
+                event_service = EventService()
+                event_service.destroy(pk=pk, request=request)
+                return JsonResponse({'message': 'Event deleted successfully'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return JsonResponse({'message': 'An error occurred', 'details': str(e)},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
