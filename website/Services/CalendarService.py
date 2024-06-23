@@ -16,3 +16,6 @@ class CalendarService:
 
     def destroy(self, request, pk):
         return self.CalendarRepository.destroy(request, pk)
+
+    def all_availability(self, id):
+        return self.CalendarRepository.all_availability(id)

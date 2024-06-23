@@ -14,3 +14,7 @@ class CalendarInterface(ABC):
 
     def destroy(self, request, pk):
         pass
+
+    @abstractmethod
+    def all_availability(self, id):
+        pass

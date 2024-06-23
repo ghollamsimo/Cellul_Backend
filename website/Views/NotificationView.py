@@ -1,16 +1,17 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from website.Serializers.NotificationSerializer import NotificationSerializer
 from website.Services.NotificationService import NotificationService
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class NotificationView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk, action=None):
         if action == 'delete_notification':
@@ -19,6 +20,16 @@ class NotificationView(APIView):
             return self.destroy_appointment(request, pk)
         else:
             return JsonResponse({'message': 'Method not allowed'}, status=405)
+
+    def get(self, request, action=None):
+        if action == 'get_notification':
+            return self.index(request)
+
+    def index(self, request):
+        notification_service = NotificationService()
+        notifications = notification_service.index(request)
+        serializer = NotificationSerializer(notifications, many=True, context={'request': request})
+        return Response({'notifications': serializer.data})
 
     def destroy_event(self, request, pk=None):
         if pk is not None:

@@ -18,3 +18,10 @@ class EventInterface(ABC):
     def destroy(self, pk, request):
         pass
 
+    @abstractmethod
+    def all_events(self):
+        pass
+
+    @abstractmethod
+    def show(self, pk):
+        pass

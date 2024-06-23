@@ -16,6 +16,11 @@ from website.Serializers.EventSerializer import EventSerializer
 
 
 class EventRepository(EventInterface, ABC):
+    def all_events(self):
+        events = Event.objects.all()
+        return events
+        pass
+
     def store(self, request):
         if not request.user.is_authenticated:
             raise serializers.ValidationError({'detail': 'Authentication credentials were not provided.'})
@@ -42,6 +47,7 @@ class EventRepository(EventInterface, ABC):
             images = request.FILES.getlist('image[]')
             for image in images:
                 file_path = default_storage.save(os.path.join('media', image.name), image)
+                file_path = 'http://192.168.1.105:8000/' + file_path
                 Media.objects.create(event=event, image_path=file_path)
 
             return event
@@ -85,7 +91,8 @@ class EventRepository(EventInterface, ABC):
         admin = Admin.objects.get(user_id=user_id)
         if admin:
             if request.query_params:
-                event = Event.objects.prefetch_related('media_set').filter(**request.query_params.dict(), admin_id=admin)
+                event = Event.objects.prefetch_related('media_set').filter(**request.query_params.dict(),
+                                                                           admin_id=admin)
             else:
                 event = Event.objects.all()
             if event is not None:
@@ -98,3 +105,9 @@ class EventRepository(EventInterface, ABC):
         if admin:
             event = get_object_or_404(Event, pk=pk)
             return event.delete()
+
+
+    def show(self, pk):
+        event = get_object_or_404(Event, id=pk)
+        return event
+        pass

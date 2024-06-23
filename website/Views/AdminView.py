@@ -13,6 +13,10 @@ class AdminView(APIView):
             return self.get_stats()
         pass
 
+    def post(self, request, action=None):
+        if request.method == 'POST' and action == 'add_adviser':
+            return self.store_user(request)
+
     def patch(self, request, id, action=None):
         if action == 'update_user':
             return self.update_user(request, id)
@@ -39,3 +43,10 @@ class AdminView(APIView):
             admin_service = AdminService()
             admin_service.delete(request, id)
             return JsonResponse({'message': 'User Deleted Successfully'}, safe=True)
+
+
+    def store_user(self, request):
+        if request.method == 'POST':
+            admin_service = AdminService()
+            admin = admin_service.create_advise(request)
+            return JsonResponse({'message': 'Adviser Created Successfully'}, status=201)

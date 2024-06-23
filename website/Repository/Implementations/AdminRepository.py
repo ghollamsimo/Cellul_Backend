@@ -2,6 +2,7 @@ from abc import ABC
 
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password, check_password
 
 from website.Models.AdminModel import Admin
 from website.Models.EventModel import Event
@@ -50,4 +51,19 @@ class AdminRepository(AdminInterface, ABC):
         if admin:
             user = get_object_or_404(User, id=id)
             return user.delete()
+        pass
+
+    def add_adviser(self, request):
+        password = request.data.get('password')
+        hashed_password = make_password(password)
+
+        user = User.objects.create(
+            name=request.data.get('name'),
+            email=request.data.get('email'),
+            password=hashed_password,
+            role='Advise'
+        )
+
+        advise = Advise.objects.create(user_id=user.id)
+        return advise
         pass

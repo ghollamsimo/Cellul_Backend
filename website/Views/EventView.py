@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from rest_framework import serializers
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -13,6 +13,23 @@ from website.Models.AdminModel import Admin
 from website.Services.EventService import EventService
 from website.Services.NotificationService import NotificationService
 from website.Serializers.EventSerializer import EventSerializer
+
+
+def index(request):
+    event_service = EventService()
+    events = event_service.all_events()
+    serializer = EventSerializer(events, many=True, context={'request': request})
+    return JsonResponse({'events': serializer.data}, safe=False)
+
+
+def show(request, pk):
+    if request.method == 'GET':
+        events_service = EventService()
+        event = events_service.show(pk)
+        serializer = EventSerializer(event, context={'request': request})
+        return JsonResponse({'event': serializer.data}, safe=False)
+    else:
+        return JsonResponse({'message': 'Method Invalid'})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -97,7 +114,7 @@ class EventView(APIView):
                 event_service = EventService()
                 events = event_service.index(request)
                 serializer = EventSerializer(events, many=True)
-                return JsonResponse({'events': serializer.data}, status=status.HTTP_200_OK)
+                return JsonResponse({'events': serializer.data})
             except Exception as e:
                 return JsonResponse({'message': 'An error occurred', 'details': str(e)},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)

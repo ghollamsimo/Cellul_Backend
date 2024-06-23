@@ -23,6 +23,9 @@ class AuthRepository(AuthInterface, ABC):
         hashed_password = make_password(password)
 
         email = validated_data.get('email')
+        #if role == 'Student' and not email.endswith('@edu.uca.ma'):
+        #   raise serializers.ValidationError({'email': 'Please use your academic email ended by (@edu.uca.ma)'})
+
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError({'email': 'Email already exists'})
 
@@ -50,3 +53,6 @@ class AuthRepository(AuthInterface, ABC):
         return User.objects.get(user)
         pass
 
+    def get_user(self, id):
+        user = User.objects.get(id=id)
+        return user

@@ -14,7 +14,7 @@ class AppointementRepository(AppointementInterface, ABC):
     def store(self, id, request):
         user_id = request.user.id
         student = get_object_or_404(Student, user=user_id)
-        advise = get_object_or_404(Advise, user__id=id)
+        advise = get_object_or_404(Advise, id=id)
 
         date = request.data.get('date')
         time = request.data.get('time')

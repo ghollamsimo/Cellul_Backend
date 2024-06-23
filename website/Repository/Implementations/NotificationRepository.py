@@ -13,6 +13,15 @@ from website.Models.AdviseModel import Advise
 
 class NotificationRepository(NotificationInterface, ABC):
 
+    def index(self, request):
+        try:
+            student = Student.objects.get(user_id=request.user.id)
+            notifications = Notification.objects.filter(student=student)
+            return notifications
+        except Student.DoesNotExist:
+            return Notification.objects.none()
+
+
     def store_of_event(self):
         students = Student.objects.all()
         event = Event.objects.latest('id')

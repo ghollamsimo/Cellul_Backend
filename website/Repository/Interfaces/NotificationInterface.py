@@ -17,3 +17,6 @@ class NotificationInterface(ABC):
     @abstractmethod
     def destroy_of_appointment(self, request, pk):
         pass
+
+    def index(self, request):
+        pass

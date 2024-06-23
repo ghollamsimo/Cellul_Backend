@@ -36,3 +36,11 @@ class AdviseRepository(AdviseInterface, ABC):
         )
 
         return appointement
+
+    def all_advise(self):
+        avisers = Advise.objects.all()
+        return avisers
+
+    def show(self, pk):
+        adviser = get_object_or_404(Advise, id=pk)
+        return adviser

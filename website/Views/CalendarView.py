@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -24,11 +25,12 @@ class CalendarView(APIView):
     def delete(self, request, pk, action=None):
         if action == 'delete_availability':
             return self.delete_availability(request, pk)
+
     def add_availability(self, request):
         if request.method == 'POST':
             calendar_service = CalendarService()
             calendar_service.store(request)
-            return JsonResponse({'message': 'Availability Added successfully'}, status=200)
+            return JsonResponse({'message': 'Availability Added successfully'}, status=201)
         pass
 
     def update_availability(self, request, pk):
@@ -44,7 +46,7 @@ class CalendarView(APIView):
             calendar_service = CalendarService()
             calendar = calendar_service.index(request)
             calendar_serializer = CalendarSerializer(calendar, many=True)
-            return JsonResponse(calendar_serializer.data, status=200)
+            return JsonResponse(calendar_serializer.data, status=200, safe=False)
         pass
 
     def delete_availability(self, request, pk):
@@ -54,3 +56,12 @@ class CalendarView(APIView):
             return JsonResponse({'message': 'Availability Deleted successfully'}, status=200)
 
         pass
+
+
+@api_view(['GET'])
+def index_availability(request, id):
+    if request.method == 'GET':
+        calendar_service = CalendarService()
+        calendar = calendar_service.all_availability(id=id)
+        calendar_serializer = CalendarSerializer(calendar, many=True)
+        return JsonResponse({'calendar': calendar_serializer.data}, status=200)

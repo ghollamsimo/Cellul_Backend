@@ -13,10 +13,10 @@ class FeedbackView(APIView):
                 return self.add_feedback(request, advise)
         pass
 
-    def get(self, request, action=None):
+    def get(self, request, advise, action=None):
         if request.method == 'GET':
             if action == 'all_feedback':
-                return self.all_feedback(request)
+                return self.all_feedback(advise, request)
 
     def put(self, request, pk, action=None):
         if request.method == 'PUT':
@@ -34,10 +34,10 @@ class FeedbackView(APIView):
         return JsonResponse({'message': 'Feedback added successfully'})
         pass
 
-    def all_feedback(self, request):
+    def all_feedback(self, advise, request):
         feedback_service = FeedbackService()
-        feedback = feedback_service.index(request)
-        feedback_serializer = FeedbackSerializer(feedback, many=True)
+        feedback = feedback_service.index(advise)
+        feedback_serializer = FeedbackSerializer(feedback, many=True, context={'request': request})
         return JsonResponse(feedback_serializer.data, status=200, safe=False)
         pass
 

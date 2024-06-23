@@ -6,7 +6,7 @@ class FeedbackInterface(ABC):
     def store(self, request, advise):
         pass
 
-    def index(self, request):
+    def index(self, advise):
         pass
 
     def update(self, pk, request):

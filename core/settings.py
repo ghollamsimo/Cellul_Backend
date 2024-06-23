@@ -22,8 +22,8 @@ pymysql.install_as_MySQLdb()
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True  # Enable TLS (Transport Layer Security)
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False  # Enable TLS (Transport Layer Security)
 EMAIL_HOST_USER = 'listeningcell.est.safi@gmail.com'
 EMAIL_HOST_PASSWORD = 'ghyb qigy stoe xhwi'  # Your Gmail password
 
@@ -42,7 +42,7 @@ DEBUG = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -143,11 +143,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cellul',
+        'NAME': 'cellule',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3308',
+        'PORT': '3307',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },

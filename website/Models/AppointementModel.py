@@ -15,9 +15,9 @@ class Status(Enum):
 class Appointment(models.Model):
     advise = models.ForeignKey('Advise', on_delete=models.CASCADE)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
-    date = models.DateField( null=True)
+    date = models.DateTimeField(null=True)
     status = models.CharField(max_length=255, choices=Status.choices(), default=Status.Waiting.value)
-    time = models.DateTimeField( null=True)
+    time = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

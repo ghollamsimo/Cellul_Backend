@@ -13,3 +13,6 @@ class AdminInterface(ABC):
     @abstractmethod
     def destroy(self, request, id):
         pass
+
+    def add_adviser(self, request):
+        pass

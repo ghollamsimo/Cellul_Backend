@@ -13,3 +13,6 @@ class AdminService:
 
     def delete(self, request, id):
         return self.AdminRepository.destroy(request, id)
+
+    def create_advise(self, request):
+        return self.AdminRepository.add_adviser(request)

@@ -22,3 +22,7 @@ class NotificationService:
         self.NotificationRepository.destroy_of_appointment(request, pk)
         return JsonResponse({'message': 'Notification deleted successfully'})
         pass
+
+    def index(self, request):
+        return self.NotificationRepository.index(request)
+        pass

@@ -8,8 +8,8 @@ class FeedbackService:
     def store_feedback(self, request, advise):
         return self.FeedbackRepository.store(request, advise)
 
-    def index(self, request):
-        return self.FeedbackRepository.index(request)
+    def index(self, advise):
+        return self.FeedbackRepository.index(advise)
 
     def update_feedback(self, pk, request):
         return self.FeedbackRepository.update(pk, request)

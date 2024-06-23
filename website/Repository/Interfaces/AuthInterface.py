@@ -11,3 +11,6 @@ class AuthInterface(ABC):
 
     def Logout(self, user):
         pass
+
+    def get_user(self, id):
+        pass

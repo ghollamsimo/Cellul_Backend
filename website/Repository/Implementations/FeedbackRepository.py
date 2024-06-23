@@ -10,7 +10,7 @@ from website.Repository.Interfaces.FeedbackInterface import FeedbackInterface
 
 class FeedbackRepository(FeedbackInterface, ABC):
     def store(self, request, advise):
-        user_id = request.data.get('user_id')
+        user_id = request.user.id
         feedback = request.data.get('feedback')
         student = Student.objects.get(user_id=user_id)
 
@@ -23,11 +23,9 @@ class FeedbackRepository(FeedbackInterface, ABC):
 
         pass
 
-    def index(self, request):
-        user_id = request.data.get('user_id')
-        advise = Advise.objects.get(user_id=user_id)
-        print('advise', advise)
-        feedback = Feedback.objects.filter(advise_id=advise)
+    def index(self, advise):
+        advise = Advise.objects.get(id=advise)
+        feedback = Feedback.objects.filter(advise_id=advise.id)
         return feedback
         pass
 

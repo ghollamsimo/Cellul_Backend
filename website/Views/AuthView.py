@@ -16,6 +16,14 @@ from django.contrib import messages
 from django.shortcuts import render
 
 
+def show_user(self, id, action=None):
+    if action == 'get_user':
+        auth_service = AuthService()
+        user = auth_service.get_user_id(id)
+        serializer = UserSerializer(user)
+        return JsonResponse({'user': serializer.data}, status=200)
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AuthView(APIView):
     permission_classes = [AllowAny]
@@ -29,6 +37,8 @@ class AuthView(APIView):
             return self.logout(request)
         else:
             return Response({'message': 'Action not specified'}, status=400)
+
+
 
     def register(self, request):
         name = request.data.get('name')
@@ -69,7 +79,7 @@ class AuthView(APIView):
         refresh_token.blacklist()
 
         return JsonResponse({'message': 'Logout successful.'})
-    
+
     def get(self, request, uidb64, token):
         auth_service = AuthService()
         success, message = auth_service.activate_account(uidb64, token)

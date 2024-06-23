@@ -52,6 +52,7 @@ class AuthService:
                 subject, message, to=[email]
             )
             email.content_subtype = 'html'
+            print("ddddd",email.send())
             email.send()
     
     def activate_account(self, uidb64, token):
@@ -64,3 +65,6 @@ class AuthService:
                 return False, 'Invalid token'
         except:
             return False, 'Invalid token'
+
+    def get_user_id(self, id):
+        return self.AuthRepository.get_user(id)
