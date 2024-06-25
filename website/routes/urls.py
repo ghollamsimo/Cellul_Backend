@@ -17,6 +17,7 @@ urlpatterns = [
     path('auth/<str:action>/', AuthView.as_view(), name='auth'),
     path('auth/<str:action>/<int:id>', show_user, name='auth'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('auth/reset-password/<str:token>/', AuthView.as_view(), {'action': 'reset_password'}, name='reset-password'),
 
     path('activate/<uidb64>/<token>/', AuthView.as_view(), name='activate-account'),
     path('events/', index),

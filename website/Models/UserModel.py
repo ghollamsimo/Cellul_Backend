@@ -44,7 +44,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    reset_password_token = models.CharField(max_length=100, null=True, blank=True)
+    reset_password_sent_at = models.DateTimeField(null=True, blank=True)
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

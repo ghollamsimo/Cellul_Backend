@@ -1,4 +1,4 @@
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import serializers
@@ -14,6 +14,10 @@ from website.Serializers.UserSerializer import UserSerializer
 from website.Services.AuthService import AuthService
 from django.contrib import messages
 from django.shortcuts import render
+
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils import timezone
 
 
 def show_user(self, id, action=None):
@@ -35,10 +39,12 @@ class AuthView(APIView):
             return self.login(request)
         elif action == 'logout':
             return self.logout(request)
+        elif action == 'forgot_password':
+            return self.forgot_password(request)
+        elif action == 'reset_password':
+            return self.reset_password(request)
         else:
             return Response({'message': 'Action not specified'}, status=400)
-
-
 
     def register(self, request):
         name = request.data.get('name')
@@ -87,3 +93,15 @@ class AuthView(APIView):
             return render(request, 'account_activation_page.html', {'message': message})
         else:
             return render(request, 'account_activation_invalid.html', {'message': message})
+
+    def forgot_password(self, request):
+        auth_service = AuthService()
+        response = auth_service.forgot_password(request)
+        return response
+
+    def reset_password(self, request):
+        token = request.data.get('token')
+        password = request.data.get('password')
+        auth_service = AuthService()
+        response = auth_service.reset_password(token, password)
+        return response

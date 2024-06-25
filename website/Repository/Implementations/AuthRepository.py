@@ -13,6 +13,11 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from website.Serializers.UserSerializer import UserSerializer
+import uuid
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
 
 
 class AuthRepository(AuthInterface, ABC):
@@ -56,3 +61,25 @@ class AuthRepository(AuthInterface, ABC):
     def get_user(self, id):
         user = User.objects.get(id=id)
         return user
+
+    def forgot_password(self, request):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            token = str(uuid.uuid4())
+            user.reset_password_token = token
+            user.reset_password_sent_at = timezone.now()
+            user.save()
+
+            reset_url = request.build_absolute_uri(
+                reverse('reset-password', kwargs={'token': token})
+            )
+            return send_mail(
+                'Password Reset Request',
+                f'Please click the link to reset your password: {reset_url}',
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+        except User.DoesNotExist:
+            return ['just for testing']

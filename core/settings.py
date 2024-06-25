@@ -22,8 +22,9 @@ pymysql.install_as_MySQLdb()
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False  # Enable TLS (Transport Layer Security)
+EMAIL_PORT = 587  # Use port 587 for TLS
+EMAIL_USE_TLS = True  # Enable TLS (Transport Layer Security)
+EMAIL_USE_SSL = False  # Ensure SSL is not enabled
 EMAIL_HOST_USER = 'listeningcell.est.safi@gmail.com'
 EMAIL_HOST_PASSWORD = 'ghyb qigy stoe xhwi'  # Your Gmail password
 

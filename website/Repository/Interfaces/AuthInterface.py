@@ -14,3 +14,6 @@ class AuthInterface(ABC):
 
     def get_user(self, id):
         pass
+
+    def forgot_password(self, request):
+        pass

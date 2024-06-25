@@ -1,6 +1,6 @@
 from abc import ABC
 
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.template.loader import render_to_string
@@ -12,7 +12,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 from website.Models import User
 from website.Repository.Implementations.AuthRepository import AuthRepository
 from website.Serializers.UserSerializer import UserSerializer
-
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.conf import settings
+from django.http import JsonResponse
 
 class AuthService:
     def __init__(self):
@@ -68,3 +71,21 @@ class AuthService:
 
     def get_user_id(self, id):
         return self.AuthRepository.get_user(id)
+
+    def forgot_password(self, request):
+        return self.AuthRepository.forgot_password(request)
+
+    def reset_password(self, token, password):
+        try:
+            user = User.objects.get(reset_password_token=token)
+            time_elapsed = timezone.now() - user.reset_password_sent_at
+            if time_elapsed.total_seconds() > 3600:
+                return JsonResponse({'error': 'Reset link has expired.'}, status=400)
+
+            user.password = make_password(password)
+            user.reset_password_token = None
+            user.reset_password_sent_at = None
+            user.save()
+            return JsonResponse({'message': 'Password has been reset successfully.'}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'Invalid reset token.'}, status=404)
