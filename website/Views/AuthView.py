@@ -20,14 +20,6 @@ from rest_framework import status
 from django.utils import timezone
 
 
-def show_user(self, id, action=None):
-    if action == 'get_user':
-        auth_service = AuthService()
-        user = auth_service.get_user_id(id)
-        serializer = UserSerializer(user)
-        return JsonResponse({'user': serializer.data}, status=200)
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class AuthView(APIView):
     permission_classes = [AllowAny]
@@ -41,10 +33,14 @@ class AuthView(APIView):
             return self.logout(request)
         elif action == 'forgot_password':
             return self.forgot_password(request)
-        elif action == 'reset_password':
-            return self.reset_password(request)
+        elif action == 'change_password':
+            return self.change_password(request)
         else:
             return Response({'message': 'Action not specified'}, status=400)
+
+    def delete(self, request, id, action=None):
+        if action == 'delete_account':
+            return self.delete_account(request, id)
 
     def register(self, request):
         name = request.data.get('name')
@@ -70,6 +66,7 @@ class AuthView(APIView):
     def login(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
+
         auth_service = AuthService()
         return auth_service.Login(email=email, password=password)
 
@@ -104,4 +101,25 @@ class AuthView(APIView):
         password = request.data.get('password')
         auth_service = AuthService()
         response = auth_service.reset_password(token, password)
-        return response
+        if response:
+            return render(request, 'forgot_password_email.html')
+
+    def delete_account(self, request, id):
+        if request.method == 'DELETE':
+            auth_service = AuthService()
+            auth = auth_service.delete_account(id)
+            return JsonResponse({'message': 'Account Deleted SuccessFully'}, status=200)
+
+    def change_password(self, request):
+        if request.method == 'POST':
+            auth_service = AuthService()
+            password = auth_service.change_password(request)
+            return JsonResponse({'message': 'Password Changed Success'}, status=200)
+
+
+def show_user(self, id, action=None):
+    if action == 'get_user':
+        auth_service = AuthService()
+        user = auth_service.get_user_id(id)
+        serializer = UserSerializer(user)
+        return JsonResponse({'user': serializer.data}, status=200)

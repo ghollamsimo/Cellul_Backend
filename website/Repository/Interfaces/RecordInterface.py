@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class RecordInterface(ABC):
     @abstractmethod
-    def store(self, request):
+    def store(self, request, id):
         pass
 
     def update(self, request, pk):

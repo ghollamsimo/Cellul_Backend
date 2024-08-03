@@ -5,8 +5,8 @@ class RecordService:
     def __init__(self):
         self.RecordRepository = RecordRepository()
 
-    def store(self, request):
-        return self.RecordRepository.store(request)
+    def store(self, request, id):
+        return self.RecordRepository.store(request, id)
 
     def update(self, request, pk):
         return self.RecordRepository.update(request, pk)

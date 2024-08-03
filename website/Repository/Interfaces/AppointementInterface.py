@@ -8,3 +8,9 @@ class AppointementInterface(ABC):
 
     def index(self, request):
         pass
+
+    def show(self, request):
+        pass
+
+    def stats(self, id):
+        pass

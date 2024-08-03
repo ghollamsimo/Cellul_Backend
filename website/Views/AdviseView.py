@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
@@ -12,11 +13,19 @@ def get_all_advisers(request):
     serializer = AdviseSerializer(advisers, many=True, context={'request': request})
     return JsonResponse({'advisers': serializer.data}, safe=False)
 
+
+def count():
+    advise_service = AdviseService()
+    stats = advise_service.count()
+    return JsonResponse(stats)
+
+
 def get_advise(request, pk):
     advise_service = AdviseService()
     advise = advise_service.show(pk)
     serializer = AdviseSerializer(advise, context={'request': request})
     return JsonResponse({'advise': serializer.data}, safe=False)
+
 
 class AdviseView(APIView):
     permission_classes = [AllowAny]

@@ -48,14 +48,14 @@ class AuthService:
             message = render_to_string('account_activation_email.html', {
                 'user': user,
                 'domain': '127.0.0.1:8000',
-                'uid':urlsafe_base64_encode(force_bytes(user.id)),
-                'token':token,
+                'uid': urlsafe_base64_encode(force_bytes(user.id)),
+                'token': token,
             })
             email = EmailMessage(
                 subject, message, to=[email]
             )
             email.content_subtype = 'html'
-            print("ddddd",email.send())
+           # print("ddddd",email.send())
             email.send()
     
     def activate_account(self, uidb64, token):
@@ -89,3 +89,9 @@ class AuthService:
             return JsonResponse({'message': 'Password has been reset successfully.'}, status=200)
         except User.DoesNotExist:
             return JsonResponse({'error': 'Invalid reset token.'}, status=404)
+
+    def delete_account(self, id):
+        return self.AuthRepository.delete_account(id)
+
+    def change_password(self, request):
+        return self.AuthRepository.change_password(request)

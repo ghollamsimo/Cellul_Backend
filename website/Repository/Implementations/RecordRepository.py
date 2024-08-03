@@ -9,10 +9,10 @@ from website.Repository.Interfaces.RecordInterface import RecordInterface
 
 
 class RecordRepository(RecordInterface, ABC):
-    def store(self, request):
+    def store(self, request, id):
         user_id = request.user.id
         advise = Advise.objects.get(user_id=user_id)
-        appointment = get_object_or_404(Appointment, id=request.data.get('appointment_id'))
+        appointment = get_object_or_404(Appointment, id=id)
         student = appointment.student_id
         if advise:
             return Record.objects.create(
@@ -30,7 +30,7 @@ class RecordRepository(RecordInterface, ABC):
         if advise:
             for key, value in request.data.items():
                 setattr(record, key, value)
-            record.save()
+            return record.save()
         pass
 
     def index(self, request):

@@ -28,6 +28,17 @@ class FeedbackView(APIView):
             if action == 'delete_feedback':
                 return self.delete_feedback(pk, student)
 
+    def patch(self, request, pk, action=None):
+        if request.method == 'PATCH':
+            feedback_service = FeedbackService()
+            if action == 'accepted_feedback':
+                feedback_service.handle_status(pk, "Accepted")
+                return JsonResponse({'message': 'Feedback has been Accepted'})
+            elif action == 'rejected_feedback':
+                feedback_service.handle_status(pk, "Rejected")
+                return JsonResponse({'message': 'Feedback has been Rejected'})
+        pass
+
     def add_feedback(self, request, advise):
         feedback_service = FeedbackService()
         feedback_service.store_feedback(request, advise)

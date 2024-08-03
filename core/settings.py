@@ -20,7 +20,7 @@ print(certifi.where())
 
 pymysql.install_as_MySQLdb()
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'website.Config.email_backend.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Use port 587 for TLS
 EMAIL_USE_TLS = True  # Enable TLS (Transport Layer Security)

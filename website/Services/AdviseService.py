@@ -13,3 +13,6 @@ class AdviseService:
 
     def show(self, pk):
         return self.AdviseRepository.show(pk)
+
+    def count(self):
+        return self.AdviseRepository.count()

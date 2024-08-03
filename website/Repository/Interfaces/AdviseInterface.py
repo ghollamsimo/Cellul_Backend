@@ -13,3 +13,7 @@ class AdviseInterface(ABC):
     @abstractmethod
     def show(self, pk):
         pass
+
+    @abstractmethod
+    def count(self):
+        pass

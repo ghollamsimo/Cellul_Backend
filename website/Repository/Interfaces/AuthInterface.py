@@ -17,3 +17,9 @@ class AuthInterface(ABC):
 
     def forgot_password(self, request):
         pass
+
+    def delete_account(self, id):
+        pass
+
+    def change_password(self, request):
+        pass

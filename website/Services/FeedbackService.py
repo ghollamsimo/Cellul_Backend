@@ -16,3 +16,6 @@ class FeedbackService:
 
     def destroy_feedback(self, pk, student):
         return self.FeedbackRepository.destroy(pk, student)
+
+    def handle_status(self, pk, status):
+        return self.FeedbackRepository.handle_status(pk, status)

@@ -61,7 +61,7 @@ class NotificationRepository(NotificationInterface, ABC):
         pass
 
     def destroy_of_event(self, request, pk):
-        user_id = request.data.get('user_id')
+        user_id = request.data.id
         student = Student.objects.get(user_id=user_id)
         if student:
             notification = get_object_or_404(Notification, pk=pk)

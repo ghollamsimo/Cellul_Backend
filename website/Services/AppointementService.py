@@ -10,3 +10,9 @@ class AppointementService:
 
     def index_appointement(self, request):
         return self.AppointementRepository.index(request)
+
+    def show(self, request):
+        return self.AppointementRepository.show(request)
+
+    def stats(self, id):
+        return self.AppointementRepository.stats(id)

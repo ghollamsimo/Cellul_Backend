@@ -14,3 +14,6 @@ class FeedbackInterface(ABC):
 
     def destroy(self, pk, student):
         pass
+
+    def handle_status(self, pk, status):
+        pass

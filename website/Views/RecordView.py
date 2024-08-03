@@ -13,9 +13,9 @@ class RecordView(APIView):
         if action == 'all_records':
             return self.all_records(request)
 
-    def post(self, request, action=None):
+    def post(self, request, pk, action=None):
         if action == 'add_record':
-            return self.add_record(request)
+            return self.add_record(request, pk)
 
     def put(self, request, pk, action=None):
         if action == 'update_record':
@@ -25,10 +25,10 @@ class RecordView(APIView):
         if action == 'delete_record':
             return self.delete_record(request, pk)
 
-    def add_record(self, request):
+    def add_record(self, request, id):
         if request.method == 'POST':
             record_service = RecordService()
-            record_service.store(request)
+            record_service.store(request, id)
             return JsonResponse({'message': 'Record added successfully'})
         pass
 

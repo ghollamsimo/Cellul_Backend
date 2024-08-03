@@ -18,3 +18,5 @@ class CalendarInterface(ABC):
     @abstractmethod
     def all_availability(self, id):
         pass
+
+

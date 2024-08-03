@@ -83,3 +83,13 @@ class AuthRepository(AuthInterface, ABC):
             )
         except User.DoesNotExist:
             return ['just for testing']
+
+    def delete_account(self, id):
+        user = User.objects.get(id=id)
+        return user.delete()
+
+    def change_password(self, request):
+        user_id = request.user.id
+        user = User.objects.get(id=user_id)
+        user.password = make_password(request.data.get('password'))
+        return user.save()

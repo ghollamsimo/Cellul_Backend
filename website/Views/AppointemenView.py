@@ -11,6 +11,11 @@ from website.Services.AppointementService import AppointementService
 from website.Services.NotificationService import NotificationService
 
 
+def stats(self, id):
+    appointment_service = AppointementService()
+    count = appointment_service.stats(id)
+
+    return JsonResponse({'count': count})
 class AppointementView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -23,6 +28,8 @@ class AppointementView(APIView):
     def get(self, request, action=None):
         if action == 'all_appointment':
             return self.all_appointments(request)
+        elif action == 'appointment':
+            return self.show(request)
         return JsonResponse({'message': 'Invalid action'}, status=400)
 
     def add_appointment(self, request, id):
@@ -43,3 +50,13 @@ class AppointementView(APIView):
             appointments = appointment_service.index_appointement(request)
             appointment_serializer = AppointmentSerializer(appointments, many=True)
             return JsonResponse(appointment_serializer.data, status=200, safe=False)
+
+    def show(self, request):
+        appointment_service = AppointementService()
+        appointment = appointment_service.show(request)
+        serializer = AppointmentSerializer(appointment)
+        return JsonResponse(serializer.data, status=200)
+
+
+
+
